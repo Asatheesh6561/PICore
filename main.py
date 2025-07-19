@@ -30,12 +30,6 @@ def main(cfg: DictConfig):
         f"{cfg.dataset.dataset_name}_{cfg.model.model_name}{cfg.dataset.dim}d_{cfg.seed}.pth",
     )
 
-    if cfg.attack != "":
-        name += f"_{cfg.attack}"
-        cfg.pretrain_model_save_path = cfg.pretrain_model_save_path.replace(
-            ".pth", f"_{cfg.attack}.pth"
-        )
-
     os.makedirs(os.path.join(cfg.log_dir, "models"), exist_ok=True)
 
     result_path = os.path.join(cfg.log_dir, f"{name}.pkl")
