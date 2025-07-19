@@ -5,6 +5,7 @@ Source code for the paper "PICore: Physics-Informed Unsupervised Coreset Selecti
 ```
 git clone https://github.com/Asatheesh6561/PICore
 conda env create -f environment.yml
+cd PICore
 ```
 
 ## Data Generation
