@@ -9,7 +9,7 @@ conda env create -f environment.yml
 
 ## Data Generation
 For the Advection, Burgers, and Darcy datasets, we use the data generation scripts found in PDEBench. For the Navier Stokes Incompressible dataset, we provide generation code in ```data_generation/ns_incompressible.py```. To downsample to smaller resolutions for training, use the scripts in ```load_data```. We have also provided pre-generated data in this
-[https://drive.google.com/drive/folders/1aypSBwUhdjH5_HxlcxfL1V4p1BYdu9yc?usp=sharing](url).
+[url](https://drive.google.com/drive/folders/1aypSBwUhdjH5_HxlcxfL1V4p1BYdu9yc?usp=sharing).
 
 ## Training
 We use hydra for configuration files for managing data-specific and model-specific parameters. For example, running PICore on the Advection Dataset with FNO using CRAIG as the coreset selection algorithm, run
