@@ -7,8 +7,8 @@ defaults:
 
 device: ${oc.env:DEVICE,"cuda:0"}
 subset_percentage: 20.0
-log_dir: /cmlscratch/anirudhs/DENO/unsupervised_results
-coreset_algorithm: cosine
+log_dir: ./results
+coreset_algorithm: gradmatch
 seed: 10
 grad_clip: 5.0
 overwrite: false
@@ -21,8 +21,8 @@ epochs: 500
 lr: 1e-3
 wandb: true
 wandb_project: DENO
-wandb_entity: anirudh-satheesh
-wandb_dir: /scratch0/anirudhs/wandb
+wandb_entity: ''
+wandb_dir: ./wandb
 mask_percentage: 0.2
 blur_std: 0.3
 simclr_epochs: 100
