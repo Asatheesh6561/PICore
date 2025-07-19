@@ -5,7 +5,7 @@ defaults:
   - override hydra/hydra_logging: disabled  
   - override hydra/job_logging: disabled  
 
-device: ${oc.env:DEVICE,"cpu"}
+device: ${oc.env:DEVICE,"cuda:0"}
 subset_percentage: 20.0
 log_dir: /cmlscratch/anirudhs/DENO/unsupervised_results
 coreset_algorithm: cosine
