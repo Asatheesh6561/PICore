@@ -12,7 +12,6 @@ coreset_algorithm: gradmatch
 seed: 10
 grad_clip: 5.0
 overwrite: false
-attack: ""
 eqn_weight: 0.0
 ic_weight: 0.0
 nrmse_weight: 1.0
@@ -24,4 +23,3 @@ wandb_project: DENO
 wandb_entity: ''
 wandb_dir: ./wandb
 sample_size_fraction: 0.1
-# pretrain_model_save_path: ${log_dir}/models
