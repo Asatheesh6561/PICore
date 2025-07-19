@@ -1,0 +1,6 @@
+hidden_channels:
+  2: 64
+  3: 32
+projection_channel_ratio: 4
+factorization: dense
+model_name: FNO

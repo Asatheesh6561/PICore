@@ -1,0 +1,30 @@
+defaults:
+  - dataset: Advection
+  - model: FNO
+  - _self_
+  - override hydra/hydra_logging: disabled  
+  - override hydra/job_logging: disabled  
+
+device: ${oc.env:DEVICE,"cpu"}
+subset_percentage: 20.0
+log_dir: /cmlscratch/anirudhs/DENO/unsupervised_results
+coreset_algorithm: cosine
+seed: 10
+grad_clip: 5.0
+overwrite: false
+attack: ""
+eqn_weight: 0.0
+ic_weight: 0.0
+nrmse_weight: 1.0
+pretrain_epochs: 25
+epochs: 500
+lr: 1e-3
+wandb: true
+wandb_project: DENO
+wandb_entity: anirudh-satheesh
+wandb_dir: /scratch0/anirudhs/wandb
+mask_percentage: 0.2
+blur_std: 0.3
+simclr_epochs: 100
+sample_size_fraction: 0.1
+# pretrain_model_save_path: ${log_dir}/models

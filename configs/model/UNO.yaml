@@ -1,0 +1,13 @@
+hidden_channels:
+  2: 64
+  3: 32
+projection_channels:
+  2: 64
+  3: 32
+uno_out_channels: [32,32,32,32]
+uno_n_modes: [[8],[8],[8],[8]]
+uno_scalings: [[1.0],[0.5],[1],[2]]
+channel_mlp_skip: "linear"
+n_layers: 4
+domain_padding: 0.2
+model_name: UNO

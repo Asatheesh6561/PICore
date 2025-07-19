@@ -1,0 +1,7 @@
+plots/
+logs/
+*.log
+*.out
+wandb/
+tables/
+plot.py

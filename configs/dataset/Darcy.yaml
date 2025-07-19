@@ -1,0 +1,14 @@
+data_path: /cmlscratch/anirudhs/DENO/data/darcy
+dataset_name: Darcy
+train_resolution: 64
+test_resolution: [64, 128]
+in_channels: 1
+out_channels: 1
+train_size: 900
+test_size: 100
+dim: 2
+n_modes: 16
+time_dependent: false
+train_batch_size: 64
+test_batch_size: 1
+pretrain_batch_size: 64
