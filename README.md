@@ -3,9 +3,9 @@ Source code for the paper "PICore: Physics-Informed Unsupervised Coreset Selecti
 
 ## Installation
 ```
-git clone https://github.com/Asatheesh6561/PICore
+git clone https://github.com/Asatheesh6561/PICore && cd PICore
 conda env create -f environment.yml
-cd PICore
+conda activate picore
 ```
 
 ## Data Generation
