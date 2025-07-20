@@ -114,7 +114,7 @@ def main():
     parser.add_argument("--resolution_end", type=int, default=8)
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument(
-        "--data_dir", type=str, default="/cmlscratch/anirudhs/DENO/data"
+        "--data_dir", type=str, default="data"
     )
 
     args = parser.parse_args()
