@@ -1,4 +1,4 @@
-data_path: /cmlscratch/anirudhs/DENO/data/advection
+data_path: data/advection
 dataset_name: Advection
 train_resolution: 64
 test_resolution: [64, 128, 256, 512, 1024]

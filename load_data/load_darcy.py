@@ -121,7 +121,7 @@ parser.add_argument(
 parser.add_argument(
     "--data_dir",
     type=str,
-    default="/cmlscratch/anirudhs/DENO/data",
+    default="data",
 )
 args = parser.parse_args()
 args.resolutions = [2**i for i in range(args.resolution_start, args.resolution_end + 1)]

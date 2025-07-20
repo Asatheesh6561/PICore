@@ -1,4 +1,4 @@
-data_path: /cmlscratch/anirudhs/DENO/data/darcy
+data_path: data/darcy
 dataset_name: Darcy
 train_resolution: 64
 test_resolution: [64, 128]
