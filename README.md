@@ -15,7 +15,7 @@ For the Advection, Burgers, and Darcy datasets, we use the data generation scrip
 ## Training
 We use hydra for configuration files for managing data-specific and model-specific parameters. For example, running PICore on the Advection Dataset with FNO using CRAIG as the coreset selection algorithm, run
 ```
-python train.py model=FNO dataset=Advection coreset_algorithm=craig
+python main.py model=FNO dataset=Advection coreset_algorithm=craig
 ```
 
 ## Logging
