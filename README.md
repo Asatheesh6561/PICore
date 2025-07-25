@@ -1,5 +1,5 @@
 # PICore
-Source code for the paper "PICore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training".
+Source code for the paper "[PICore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training](https://www.arxiv.org/abs/2507.17151)".
 
 ## Installation
 ```
