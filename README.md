@@ -1,5 +1,5 @@
 # PICore
-Source code for the paper "[PICore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training](https://www.arxiv.org/abs/2507.17151)".
+This repository provides source code for the TMLR 2025 paper "[PICore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training](https://openreview.net/pdf?id=l0VSewTJCI)".
 
 ## Installation
 ```
@@ -19,5 +19,20 @@ python main.py model=FNO dataset=Advection coreset_algorithm=craig
 
 ## Logging
 We provide optional logging to Weights and Biases, but you must change the wandb parameters in ```configs/config.yaml``` if you are using it. We also save all results to a pickle file in the ```results``` folder.
+
+## Citation
+PICore is accepted to Transactions on Machine Learning Research 2025. If you use PICore in your work, please cite us as follows:
+```
+@article{
+satheesh2025picore,
+title={{PIC}ore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training},
+author={Anirudh Satheesh and Anant Khandelwal and Mucong Ding and Radu Balan},
+journal={Transactions on Machine Learning Research},
+issn={2835-8856},
+year={2025},
+url={https://openreview.net/forum?id=l0VSewTJCI},
+note={}
+}
+```
 
 
