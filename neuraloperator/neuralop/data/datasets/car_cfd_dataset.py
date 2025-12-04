@@ -2,6 +2,7 @@ from typing import List, Union
 from pathlib import Path
 
 import torch
+from torch.utils.data import DataLoader
 
 from .mesh_datamodule import MeshDataModule
 from .web_utils import download_from_zenodo_record
@@ -92,3 +93,60 @@ class CarCFDDataset(MeshDataModule):
         for i, data in enumerate(self.test_data.data_list):
             press = data['press']
             self.test_data.data_list[i]['press'] = torch.cat((press[:,0:16], press[:,112:]), axis=1)
+
+
+def load_car_cfd(
+    data_root: Union[Path, str],
+    n_train: int,
+    n_test: int,
+    batch_size: int,
+    test_batch_size: int,
+    query_res: List[int] = [32, 32, 32],
+    download: bool = True,
+):
+    """
+    Legacy function to load the CarCFD dataset
+
+    Parameters
+    ----------
+    data_root : Union[Path, str]
+        Path to the directory containing data files
+    n_train : int
+        Number of training instances
+    n_test : int
+        Number of testing instances
+    batch_size : int
+        Batch size for the training set
+    test_batch_size : int
+        Batch size for the test set
+    query_res : List[int], optional
+        Dimension-wise resolution of signed distance function (SDF) query cube, default is [32, 32, 32]
+    download : bool, optional
+        Whether to download data from Zenodo, default is True
+
+    Returns
+    -------
+    train_loader : torch.utils.data.DataLoader
+        DataLoader for the training set
+    test_loader : torch.utils.data.DataLoader
+        DataLoader for the test set
+    data_processor : None
+        Data processor (None for CarCFDDataset as it inherits from MeshDataModule)
+    """
+    car_cfd_dataset = CarCFDDataset(
+        root_dir=data_root,
+        n_train=n_train,
+        n_test=n_test,
+        query_res=query_res,
+        download=download,
+    )
+
+    train_loader = DataLoader(
+        car_cfd_dataset.train_data, batch_size=batch_size, shuffle=True
+    )
+
+    test_loader = DataLoader(
+        car_cfd_dataset.test_data, batch_size=test_batch_size, shuffle=False
+    )
+
+    return train_loader, test_loader, None

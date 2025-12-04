@@ -9,7 +9,7 @@ from .pt_dataset import PTDataset
 from .burgers import BurgersDataset, load_burgers_1d
 from .dict_dataset import DictDataset
 from .mesh_datamodule import MeshDataModule
-from .car_cfd_dataset import CarCFDDataset
+from .car_cfd_dataset import CarCFDDataset, load_car_cfd
 
 # only import SphericalSWEDataset if torch_harmonics is built locally
 try:

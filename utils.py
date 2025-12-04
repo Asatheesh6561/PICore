@@ -73,6 +73,19 @@ def get_model(args):
             n_layers=args.model.n_layers,
             dim=args.dataset.dim,
         )
+    elif model_name == "FNOGNO":
+        if type(args.dataset.n_modes) == tuple:
+            n_modes = args.dataset.n_modes
+        else:
+            n_modes = tuple([args.dataset.n_modes] * args.dataset.dim)
+        model = FNOGNO(
+            in_channels=args.dataset.in_channels,
+            out_channels=args.dataset.out_channels,
+            fno_n_modes=n_modes,
+            fno_hidden_channels=args.model.hidden_channels[args.dataset.dim],
+            gno_use_open3d=False,
+            gno_coord_dim=args.dataset.dim,
+        )
     else:
         raise ValueError(f"Unknown model: {model_name}")
     return model
@@ -150,12 +163,6 @@ def get_dataset(args):
         )
 
     data_processor = data_processor.to(args.device)
-
-    if args.attack == "mask":
-        train_loader = generate_masked_train_loader(train_loader, args.mask_percentage)
-    if args.attack == "blur":
-        train_loader = generate_blurred_train_loader(train_loader, args.blur_std)
-
     return train_loader, test_loaders, data_processor
 
 
@@ -212,7 +219,7 @@ def pretrain(args, model, train_loader, optimizer, train_loss, data_processor):
             batch_size=args.dataset.pretrain_batch_size,
             shuffle=True,
         )
-        for epoch in tqdm(range(args.pretrain_epochs), desc="Pretraining epochs"):
+        for epoch in tqdm(range(int(args.pretrain_epochs)), desc="Pretraining epochs"):
             model.train()
             mean_loss = 0
             for batch_idx, data in enumerate(dataloader):

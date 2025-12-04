@@ -124,18 +124,6 @@ class BaseCoresetSelection(ABC):
         influence_scores = torch.tensor(influence_scores).to(device)
         return influence_scores
 
-
-class RandomSelection(BaseCoresetSelection):
-    def select_coreset(self):
-        coreset_start = time.time()
-        indices = (
-            torch.randperm(len(self.train_loader))[: self.num_samples].cpu().numpy()
-        )
-        gamma = {i.item(): len(self.train_loader) // len(indices) for i in indices}
-        coreset_end = time.time()
-        return list(indices), gamma, coreset_end - coreset_start
-
-
 class CRAIGSelection(BaseCoresetSelection):
     def select_coreset(self):
         self.model = pretrain(
@@ -382,150 +370,6 @@ class AdacoreSelection(BaseCoresetSelection):
 
         return similarity_matrix.cpu().numpy()
 
-
-class InfluenceSelection(BaseCoresetSelection):
-    def select_coreset(self):
-        self.model = pretrain(
-            self.args,
-            self.model,
-            self.train_loader,
-            self.optimizer,
-            self.train_loss,
-            self.data_processor,
-        )
-        coreset_start = time.time()
-        influence_scores = self.calculate_influence_scores(
-            self.model,
-            self.train_loader,
-            self.train_loss,
-            self.args.device,
-        )
-        top_indices = torch.topk(influence_scores, self.num_samples, largest=True)
-        weights = influence_scores.cpu().numpy()
-        coreset_end = time.time()
-        return (
-            top_indices.indices.tolist(),
-            weights,
-            coreset_end - coreset_start,
-        )
-
-
-class KMeansSelection(BaseCoresetSelection):
-    def select_coreset(self):
-        coreset_start = time.time()
-        input_data = []
-        for batch in self.train_loader:
-            inputs = batch["x"]
-            input_data.append(inputs.cpu().numpy())
-        input_data = np.concatenate(input_data, axis=0)
-        input_data = input_data.reshape(len(input_data), -1)
-        kmeans = KMeans(
-            n_clusters=self.num_samples, random_state=self.args.seed, n_init="auto"
-        ).fit(input_data)
-        selected_indices = self._select_closest_to_centers(
-            input_data, kmeans.cluster_centers_
-        )
-        gamma = self._compute_cluster_weights(kmeans.labels_, selected_indices)
-        coreset_end = time.time()
-        return selected_indices, gamma, coreset_end - coreset_start
-
-    def _select_closest_to_centers(self, data, centers):
-        selected = []
-        for i in tqdm(range(len(centers)), desc="Selecting coreset"):
-            distances = np.linalg.norm(data - centers[i], axis=1)
-            closest = np.argmin(distances)
-            selected.append(closest)
-        return selected
-
-    def _compute_cluster_weights(self, labels, selected_indices):
-        cluster_counts = np.bincount(labels)
-        total = cluster_counts.sum()
-        gamma = {
-            selected_indices[i]: cluster_counts[i] / total
-            for i in range(len(selected_indices))
-        }
-        return gamma
-
-
-class CosSimilaritySelection(BaseCoresetSelection):
-    def select_coreset(self):
-        coreset_start = time.time()
-        input_data = []
-        for batch in self.train_loader:
-            inputs = batch["x"]
-            input_data.append(inputs.cpu().numpy())
-        input_data = np.concatenate(input_data, axis=0)
-        input_data = input_data.reshape(len(input_data), -1)
-        similarity_matrix = -cdist(input_data, input_data, "cosine")
-
-        S, gamma = stocastic_greedy_selection(
-            similarity_matrix,
-            self.num_samples,
-            self.args.sample_size_fraction,
-            "bincount",
-        )
-        coreset_end = time.time()
-        return S, gamma, coreset_end - coreset_start
-
-
-class HerdingSelection(BaseCoresetSelection):
-    def select_coreset(self):
-        coreset_start = time.time()
-        input_data = []
-        for batch in self.train_loader:
-            inputs = batch["x"]
-            input_data.append(inputs.cpu().numpy())
-        input_data = np.concatenate(input_data, axis=0)
-        input_data = input_data.reshape(len(input_data), -1)
-
-        mean_feature = np.mean(input_data, axis=0)
-        S = []
-        selected_vectors = []
-        residual = mean_feature.copy()
-
-        for _ in tqdm(range(self.num_samples), desc="Herding selection"):
-            scores = input_data @ residual
-            idx = np.argmax(scores)
-
-            while idx in S:
-                scores[idx] = -np.inf
-                idx = np.argmax(scores)
-
-            S.append(idx)
-            selected_vectors.append(input_data[idx])
-            residual = mean_feature - np.mean(selected_vectors, axis=0)
-
-        coreset_end = time.time()
-        return S, {i: 1 for i in S}, coreset_end - coreset_start
-
-
-class SimCLRSelection(BaseCoresetSelection):
-    def select_coreset(self):
-        coreset_start = time.time()
-        input_shape = tuple(
-            [self.args.in_channels]
-            + [self.args.dataset.train_resolution] * self.args.dim
-        )
-        self.SimCLR = SimCLR(input_shape)
-        self.SimCLR.train_simclr(self.args, self.train_loader)
-        all_reps = []
-        with torch.no_grad():
-            for batch in self.train_loader:
-                inputs = batch["x"].to(self.args.device)
-                outputs = self.SimCLR.projector(self.SimCLR.encoder(inputs).flatten())
-                all_reps.append(outputs.cpu())
-        all_reps = torch.stack(all_reps, dim=0)
-        similarity_matrix = -cdist(all_reps, all_reps, "cosine")
-        S, gamma = stocastic_greedy_selection(
-            similarity_matrix,
-            self.num_samples,
-            self.args.sample_size_fraction,
-            "uniform",
-        )
-        coreset_end = time.time()
-        return S, gamma, coreset_end - coreset_start
-
-
 class CoresetSelection:
     def __init__(
         self, args, train_loader, model, train_loss, optimizer, data_processor
@@ -539,17 +383,11 @@ class CoresetSelection:
 
     def coreset_selection(self):
         coreset_algorithms = {
-            "random": RandomSelection,
             "craig": CRAIGSelection,
             "gradmatch": GradMatchSelection,
             "el2n": EL2NSelection,
             "graNd": GraNdSelection,
             "adacore": AdacoreSelection,
-            "influence": InfluenceSelection,
-            "kmeans": KMeansSelection,
-            "cosine": CosSimilaritySelection,
-            "simclr": SimCLRSelection,
-            "herding": HerdingSelection,
         }
         if self.args.coreset_algorithm not in coreset_algorithms:
             raise ValueError(

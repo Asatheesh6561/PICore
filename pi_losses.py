@@ -198,8 +198,8 @@ class DarcyEqnLoss(object):
         del ux, uy, a_ux, a_uy, a_uxx, a_uyy
         return loss
 
-    def __call__(self, y_pred, x, **kwargs):
-        return self.fdm(y_pred, x)
+    def __call__(self, y_pred, x, reduction="mean", **kwargs):
+        return self.fdm(y_pred, x, reduction=reduction)
 
 
 class AdvectionEqnLoss(object):
@@ -372,7 +372,9 @@ class WeightedSumLoss(object):
             float(weight) * loss(*args, **kwargs) for loss, weight in self.losses
         ]
         if "reduction" in kwargs and kwargs["reduction"] == "none":
-            return torch.cat([i.flatten() for i in weighted_losses])
+            return torch.stack(
+                [i.reshape(i.shape[0], -1).mean(dim=1) for i in weighted_losses]
+            ).sum(dim=0)
         else:
             return sum(weighted_losses)
 

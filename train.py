@@ -29,7 +29,7 @@ class Trainer:
         self.train_loader = train_loader
         self.test_loaders = test_loaders
         self.pretrain_loss = WeightedSumLoss(
-            [PILoss(self.args.dataset.dataset_name), ICLoss(), nrmse_loss],
+            [PILoss(self.args.dataset.dataset_name), ICLoss(nrmse_loss), nrmse_loss],
             weights=[self.args.eqn_weight, self.args.ic_weight, self.args.nrmse_weight],
         )
         self.train_loss = nrmse_loss
