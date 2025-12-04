@@ -22,16 +22,16 @@ We provide optional logging to Weights and Biases, but you must change the wandb
 
 ## Citation
 PICore is accepted to Transactions on Machine Learning Research 2025. If you use PICore in your work, please cite us as follows:
-```
+```bibtex
 @article{
-satheesh2025picore,
-title={{PIC}ore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training},
-author={Anirudh Satheesh and Anant Khandelwal and Mucong Ding and Radu Balan},
-journal={Transactions on Machine Learning Research},
-issn={2835-8856},
-year={2025},
-url={https://openreview.net/forum?id=l0VSewTJCI},
-note={}
+  satheesh2025picore,
+  title={{PIC}ore: Physics-Informed Unsupervised Coreset Selection for Data Efficient Neural Operator Training},
+  author={Anirudh Satheesh and Anant Khandelwal and Mucong Ding and Radu Balan},
+  journal={Transactions on Machine Learning Research},
+  issn={2835-8856},
+  year={2025},
+  url={https://openreview.net/forum?id=l0VSewTJCI},
+  note={}
 }
 ```
 
